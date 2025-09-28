@@ -8,7 +8,7 @@ SEED = 100
 
 env_name = "propositional_logic"
 
-dataset = reasoning_gym.create_dataset(env_name,seed=42, size=20)
+dataset = reasoning_gym.create_dataset(env_name,seed=42, size=2)
 
 
 for example in dataset:
@@ -37,8 +37,8 @@ for example in dataset:
 
     score_function = reasoning_gym.get_score_answer_fn(example["metadata"]["source_dataset"])
 
-    print(f"Extracted Answer: {pred_answer}")
-    print(f"True Answer: {answer}")
+    # print(f"Extracted Answer: {pred_answer}")
+    # print(f"True Answer: {answer}")
     reward = score_function(pred_answer, example)
     if reward > 0:
         print(f"[bold green]Correct! Reward: {reward}[/bold green]")

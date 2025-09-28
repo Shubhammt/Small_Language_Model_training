@@ -44,3 +44,12 @@ def calculate_total_reward(batch_response, validation_objects):
     correctness_rewards = np.array([calculate_correctness_reward(extract_answer(resp), val_obj) for resp, val_obj in zip(batch_response, validation_objects)])
     total_rewards = (FORMAT_REWARD_WEIGHT * format_rewards) + (CORRECTNESS_REWARD_WEIGHT * correctness_rewards)
     return total_rewards
+
+def compute_policy_loss(new_log_probs, old_log_probs, advantages, response_mask):
+    ratioes = new_log_probs/old_log_probs
+    relavant_ratioes = ratioes*response_mask
+    clipped_term = advantages@torch.clip(relavant_ratioes, 0.8, 1.2)
+    unclipped_term = advantages@relavant_ratioes
+    grpo_term = torch.min(unclipped_term, clipped_term)
+    loss = torch.sum(grpo_term)/grpo_term.shape[1]
+    return loss
